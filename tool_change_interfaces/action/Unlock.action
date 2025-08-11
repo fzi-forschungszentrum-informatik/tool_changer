@@ -1,0 +1,13 @@
+# Unlock a tool after being attached to the robot
+# This is called by the tool changer nodes to make sure a tool is unlocked before moving away.
+# Depending on the specific robot, this could:
+#   - Wait for a human to remove a tool from the robot.
+#   - Actuate pneumatic valves for an automated tool changer.
+#   - Do nothing, but wait for a human to verify correct unlocking.
+
+# Name of the tool that should get unlocked
+string tool_name
+---
+bool success
+string message
+---

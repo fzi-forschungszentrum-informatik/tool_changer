@@ -1,0 +1,16 @@
+# Lock a tool to a robot
+# This is called by the tool changer nodes to make sure a tool is locked to a robot.
+# Depending on the specific robot, this could:
+#   - Wait for a human to screw a tool to the robot.
+#   - Actuate pneumatic valves for an automated tool changer.
+#   - Do nothing, but wait for a human to verify correct locking.
+
+# Link the tool gets coupled to
+string tip
+
+# Name of the tool that gets coupled to tip
+string tool_name
+---
+bool success
+string message
+---

@@ -1,0 +1,17 @@
+# Move a tool to storage and detach it
+
+# Tool to detach
+string tool_name
+
+# The target pose for the tools root link
+string target_frame
+
+# Names of links that are allowed to collide with the tool while retracting
+string[] after_unlock_collision_links
+
+# Pairs of links that are allowed to collide during the approach and retract trajectories
+manipulation_pipeline_interfaces/CollisionPair[] allowed_collisions
+---
+bool success
+string message
+---

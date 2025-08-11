@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>tool_change_manager</name>
+  <version>0.0.0</version>
+  <description>Manage different end-effectors and change between them</description>
+
+  <maintainer email="wilbrandt@fzi.de">Robert Wilbrandt</maintainer>
+
+  <license>BSD-3-Clause</license>
+
+  <author>Robert Wilbrandt</author>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>fmt</depend>
+  <depend>rclcpp</depend>
+  <depend>srdfdom</depend>
+  <depend>tf2</depend>
+  <depend>tool_change_interfaces</depend>
+  <depend>tinyxml2</depend>
+  <depend>tinyxml2_vendor</depend>
+  <depend>urdfdom</depend>
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

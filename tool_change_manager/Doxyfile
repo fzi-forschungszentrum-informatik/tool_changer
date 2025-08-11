@@ -1,0 +1,15 @@
+PROJECT_NAME           = tool_change_manager
+PROJECT_NUMBER         = 0.0.0
+PROJECT_BRIEF          = "Manage different robot end-effectors by assembling URDF and SRDF dynamically"
+
+INPUT                  = ./include
+RECURSIVE              = YES
+OUTPUT_DIRECTORY       = doc_output
+
+EXTRACT_ALL            = YES
+
+GENERATE_LATEX         = NO
+GENERATE_XML           = YES
+
+# Hide forward declarations
+EXCLUDE_SYMBOLS        = rclcpp,srdf,urdf

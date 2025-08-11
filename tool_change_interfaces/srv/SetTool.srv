@@ -1,0 +1,11 @@
+# Define a tool state and update descriptions
+# This is mostly used to update the ROS state to match reality, e.g. after startup.
+
+# Name of the tool as defined in the tools parameter
+string tool_name
+
+# Link to attach tool to
+string parent_link
+---
+bool success
+string message

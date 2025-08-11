@@ -1,0 +1,20 @@
+# Move to a tool and attach it to a robot
+
+# Joint group to use
+string joint_group
+
+# Tip link moved along the tool couple before_lock path
+string tip
+
+# Name of the tool to attach
+string tool_name
+
+# Names of links that are allowed to collide with the tool while approaching
+string[] before_lock_collision_links
+
+# Pairs of links that are allowed to collide during the approach and retract trajectories
+manipulation_pipeline_interfaces/CollisionPair[] allowed_collisions
+---
+bool success
+string message
+---
