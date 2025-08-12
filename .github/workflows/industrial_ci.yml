@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  workflow_call:
+    inputs:
+      ros_distro:
+        required: true
+        type: string
+      ros_repo:
+        required: true
+        type: string
+
+jobs:
+  industrial_ci:
+    name: ROS ${{ matrix.ros_distro }} (${{ matrix.ros_repo }})
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: 'ros-industrial/industrial_ci@master'
+        env:
+          ROS_DISTRO: ${{ inputs.ros_distro }}
+          ROS_REPO: ${{ inputs.ros_repo }}
+          UPSTREAM_WORKSPACE: tool_changer.${{ inputs.ros_distro }}.repos
+          UPSTREAM_CMAKE_ARGS: -DBUILD_TESTING:BOOL=Off
