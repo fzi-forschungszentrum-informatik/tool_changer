@@ -164,7 +164,12 @@ void ToolChangeExecutor::couple(const std::shared_ptr<CoupleGoalHandle>& goal_ha
     couple_before_lock_goal.motion_limits = tool.couple_before_lock.motion_limits;
 
     couple_before_lock_goal.disabled_collisions = goal.allowed_collisions;
-    for (const auto& collision_link : goal.before_lock_collision_links)
+
+    std::vector<std::string> before_lock_allowed_tool_collision_links =
+      goal.before_lock_collision_links;
+    before_lock_allowed_tool_collision_links.push_back(
+      goal.tip); // Always allow a collision between tip link and all tool links
+    for (const auto& collision_link : before_lock_allowed_tool_collision_links)
     {
       for (const auto& tool_link : tool.links)
       {
@@ -293,7 +298,11 @@ void ToolChangeExecutor::decouple(const std::shared_ptr<DecoupleGoalHandle>& goa
     decouple_after_unlock_goal.motion_limits = tool.decouple_after_unlock.motion_limits;
 
     decouple_after_unlock_goal.disabled_collisions = goal.allowed_collisions;
-    for (const auto& collision_link : goal.after_unlock_collision_links)
+    std::vector<std::string> after_unlock_allowed_tool_collision_links =
+      goal.after_unlock_collision_links;
+    after_unlock_allowed_tool_collision_links.push_back(
+      tool_state.parent); // Always allow collisions with tip link
+    for (const auto& collision_link : after_unlock_allowed_tool_collision_links)
     {
       for (const auto& tool_link : tool.links)
       {
