@@ -135,6 +135,15 @@ void ToolChangeExecutor::couple(const std::shared_ptr<CoupleGoalHandle>& goal_ha
                 goal.tip.c_str(),
                 goal.joint_group.c_str());
 
+    if (goal.controller.empty())
+    {
+      RCLCPP_INFO(m_log, "No controller was specified for the coupling, using default one.");
+    }
+    else
+    {
+      RCLCPP_INFO(m_log, "Controller used for coupling: %s", goal.controller.c_str());
+    }
+
     // Get tool definition from library
     const auto [tool, tool_state] = m_tool_library.lookup(goal.tool_name);
     if (tool_state.active)
@@ -162,6 +171,7 @@ void ToolChangeExecutor::couple(const std::shared_ptr<CoupleGoalHandle>& goal_ha
     couple_before_lock_goal.path_frame    = tool.couple_before_lock.path_frame;
     couple_before_lock_goal.path          = tool.couple_before_lock.path;
     couple_before_lock_goal.motion_limits = tool.couple_before_lock.motion_limits;
+    couple_before_lock_goal.controller    = goal.controller;
 
     couple_before_lock_goal.disabled_collisions = goal.allowed_collisions;
 
@@ -203,6 +213,7 @@ void ToolChangeExecutor::couple(const std::shared_ptr<CoupleGoalHandle>& goal_ha
     couple_after_lock_goal.path                = tool.couple_after_lock.path;
     couple_after_lock_goal.motion_limits       = tool.couple_after_lock.motion_limits;
     couple_after_lock_goal.disabled_collisions = goal.allowed_collisions;
+    couple_after_lock_goal.controller          = goal.controller;
 
     executePath(couple_after_lock_goal);
 
@@ -230,6 +241,15 @@ void ToolChangeExecutor::decouple(const std::shared_ptr<DecoupleGoalHandle>& goa
                 "Decoupling tool %s at target frame %s",
                 goal.tool_name.c_str(),
                 goal.target_frame.c_str());
+
+    if (goal.controller.empty())
+    {
+      RCLCPP_INFO(m_log, "No controller was specified for the decoupling, using default one.");
+    }
+    else
+    {
+      RCLCPP_INFO(m_log, "Controller used for decoupling: %s", goal.controller.c_str());
+    }
 
     const auto now = m_node->get_clock()->now();
 
@@ -273,6 +293,7 @@ void ToolChangeExecutor::decouple(const std::shared_ptr<DecoupleGoalHandle>& goa
                      return result_msg;
                    });
     decouple_before_unlock_goal.motion_limits = tool.decouple_before_unlock.motion_limits;
+    decouple_before_unlock_goal.controller    = goal.controller;
 
     executePath(decouple_before_unlock_goal);
 
@@ -296,6 +317,7 @@ void ToolChangeExecutor::decouple(const std::shared_ptr<DecoupleGoalHandle>& goa
     decouple_after_unlock_goal.path_frame    = tool.decouple_after_unlock.path_frame;
     decouple_after_unlock_goal.path          = tool.decouple_after_unlock.path;
     decouple_after_unlock_goal.motion_limits = tool.decouple_after_unlock.motion_limits;
+    decouple_after_unlock_goal.controller    = goal.controller;
 
     decouple_after_unlock_goal.disabled_collisions = goal.allowed_collisions;
     std::vector<std::string> after_unlock_allowed_tool_collision_links =
