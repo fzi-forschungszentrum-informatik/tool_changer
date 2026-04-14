@@ -332,9 +332,13 @@ int main(int argc, char* argv[])
 {
   rclcpp::init(argc, argv);
 
-  const auto node                = std::make_shared<rclcpp::Node>("tool_change_manager");
+  const auto node = std::make_shared<rclcpp::Node>("tool_change_manager");
+  rclcpp::executors::SingleThreadedExecutor executor;
+  executor.add_node(node);
+
   const auto tool_change_manager = tool_change_manager::ToolChangeManager::create(node);
-  rclcpp::spin(node);
+
+  executor.spin();
 
   rclcpp::shutdown();
   return EXIT_SUCCESS;
