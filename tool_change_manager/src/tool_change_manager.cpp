@@ -74,9 +74,12 @@ ToolChangeManager::ToolChangeManager(const rclcpp::Node::SharedPtr& node)
   }
 
   // Advertise ros interfaces
-  m_set_tool_service = node->create_service<SetTool>(
-    "~/set_tool",
-    std::bind(&ToolChangeManager::setToolCb, this, std::placeholders::_1, std::placeholders::_2));
+  m_set_tool_service = node->create_service<SetTool>("~/set_tool",
+                                                     std::bind(&ToolChangeManager::setToolCb,
+                                                               this,
+                                                               std::placeholders::_1,
+                                                               std::placeholders::_2,
+                                                               std::placeholders::_3));
   m_state_pub =
     node->create_publisher<StateMsg>("~/state", rclcpp::QoS{1}.transient_local().reliable());
   m_library_pub = node->create_publisher<LibraryMsg>("~/tool_library",
@@ -265,9 +268,9 @@ void ToolChangeManager::toolChangeCb(const std::vector<Tool>& tools) const
 }
 
 void ToolChangeManager::setToolCb(std::shared_ptr<rmw_request_id_t> header,
-                                  std::shared_ptr<SetTool::Request> request)
+                                  std::shared_ptr<SetTool::Request> request,
+                                  std::shared_ptr<SetTool::Response> response)
 {
-  const auto response = std::make_shared<SetTool::Response>();
   RobotDescription composite_description;
 
   try

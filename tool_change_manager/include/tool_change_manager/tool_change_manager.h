@@ -71,7 +71,8 @@ private:
 
   using SetTool = tool_change_interfaces::srv::SetTool;
   void setToolCb(std::shared_ptr<rmw_request_id_t> header,
-                 std::shared_ptr<SetTool::Request> request);
+                 std::shared_ptr<SetTool::Request> request,
+                 std::shared_ptr<SetTool::Response> response);
 
   rclcpp::Node::SharedPtr m_node;
   rclcpp::Logger m_log;
