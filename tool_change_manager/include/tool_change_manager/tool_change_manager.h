@@ -52,9 +52,12 @@ namespace tool_change_manager {
 
 class RobotModel;
 
-class ToolChangeManager
+class ToolChangeManager : public std::enable_shared_from_this<ToolChangeManager>
 {
 public:
+  static std::shared_ptr<ToolChangeManager> create(const rclcpp::Node::SharedPtr& node);
+
+private:
   explicit ToolChangeManager(const rclcpp::Node::SharedPtr& node);
 
 private:

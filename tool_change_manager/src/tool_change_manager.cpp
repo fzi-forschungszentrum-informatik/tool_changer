@@ -43,6 +43,11 @@
 
 namespace tool_change_manager {
 
+std::shared_ptr<ToolChangeManager> ToolChangeManager::create(const rclcpp::Node::SharedPtr& node)
+{
+  return std::shared_ptr<ToolChangeManager>{new ToolChangeManager{node}};
+}
+
 ToolChangeManager::ToolChangeManager(const rclcpp::Node::SharedPtr& node)
   : m_node{node}
   , m_log{m_node->get_logger()}
@@ -292,22 +297,23 @@ void ToolChangeManager::setToolCb(std::shared_ptr<rmw_request_id_t> header,
   if (response->success)
   {
     // Asynchronously set parameter and send response
-    std::thread async_executor{[this, header, response, composite_description] {
+    auto self = shared_from_this();
+    std::thread async_executor{[self, header, response, composite_description] {
       try
       {
         // Try setting description parameter
-        m_param_interface.setRobotDescription(composite_description).get();
-        RCLCPP_INFO(m_log, "%s", response->message.c_str());
+        self->m_param_interface.setRobotDescription(composite_description).get();
+        RCLCPP_INFO(self->m_log, "%s", response->message.c_str());
       }
       catch (std::runtime_error& ex)
       {
         // Error handling in case of e.g. invalid description
         response->success = false;
         response->message = fmt::format("Could not set robot description: {}", ex.what());
-        RCLCPP_ERROR(m_log, "%s", response->message.c_str());
+        RCLCPP_ERROR(self->m_log, "%s", response->message.c_str());
       }
 
-      m_set_tool_service->send_response(*header, *response);
+      self->m_set_tool_service->send_response(*header, *response);
     }};
     async_executor.detach();
   }
@@ -327,7 +333,7 @@ int main(int argc, char* argv[])
   rclcpp::init(argc, argv);
 
   const auto node                = std::make_shared<rclcpp::Node>("tool_change_manager");
-  const auto tool_change_manager = std::make_shared<tool_change_manager::ToolChangeManager>(node);
+  const auto tool_change_manager = tool_change_manager::ToolChangeManager::create(node);
   rclcpp::spin(node);
 
   rclcpp::shutdown();
