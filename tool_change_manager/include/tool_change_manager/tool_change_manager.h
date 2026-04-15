@@ -55,10 +55,11 @@ class RobotModel;
 class ToolChangeManager : public std::enable_shared_from_this<ToolChangeManager>
 {
 public:
-  static std::shared_ptr<ToolChangeManager> create(const rclcpp::Node::SharedPtr& node);
+  static std::shared_ptr<ToolChangeManager> create(const rclcpp::Node::SharedPtr& node,
+                                                   rclcpp::Executor& executor);
 
 private:
-  explicit ToolChangeManager(const rclcpp::Node::SharedPtr& node);
+  explicit ToolChangeManager(const rclcpp::Node::SharedPtr& node, rclcpp::Executor& executor);
 
 private:
   using ToolPathMsg = tool_change_interfaces::msg::ToolPath;
