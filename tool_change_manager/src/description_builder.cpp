@@ -62,8 +62,9 @@ RobotDescription DescriptionBuilder::buildDescription(const Component& base,
   tinyxml2::XMLPrinter printer;
   urdf_document->Accept(&printer);
 
-  return RobotDescription{std::string{printer.CStr(), static_cast<std::size_t>(printer.CStrSize())},
-                          buildRobotDescriptionSemantic(base, tools, *urdf)};
+  return RobotDescription{
+    std::string{printer.CStr(), static_cast<std::size_t>(printer.CStrSize() - 1)},
+    buildRobotDescriptionSemantic(base, tools, *urdf)};
 }
 
 std::shared_ptr<urdf::ModelInterface>
