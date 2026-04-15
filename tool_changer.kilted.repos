@@ -1,0 +1,5 @@
+repositories:
+  manipulation_pipeline:
+    type: git
+    url: https://github.com/fzi-forschungszentrum-informatik/manipulation_pipeline
+    version: main

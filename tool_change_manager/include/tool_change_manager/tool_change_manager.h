@@ -52,9 +52,12 @@ namespace tool_change_manager {
 
 class RobotModel;
 
-class ToolChangeManager
+class ToolChangeManager : public std::enable_shared_from_this<ToolChangeManager>
 {
 public:
+  static std::shared_ptr<ToolChangeManager> create(const rclcpp::Node::SharedPtr& node);
+
+private:
   explicit ToolChangeManager(const rclcpp::Node::SharedPtr& node);
 
 private:
@@ -71,7 +74,8 @@ private:
 
   using SetTool = tool_change_interfaces::srv::SetTool;
   void setToolCb(std::shared_ptr<rmw_request_id_t> header,
-                 std::shared_ptr<SetTool::Request> request);
+                 std::shared_ptr<SetTool::Request> request,
+                 std::shared_ptr<SetTool::Response> response);
 
   rclcpp::Node::SharedPtr m_node;
   rclcpp::Logger m_log;
