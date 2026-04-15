@@ -43,19 +43,21 @@
 
 namespace tool_change_manager {
 
-std::shared_ptr<ToolChangeManager> ToolChangeManager::create(const rclcpp::Node::SharedPtr& node)
+std::shared_ptr<ToolChangeManager> ToolChangeManager::create(const rclcpp::Node::SharedPtr& node,
+                                                             rclcpp::Executor& executor)
 {
-  return std::shared_ptr<ToolChangeManager>{new ToolChangeManager{node}};
+  return std::shared_ptr<ToolChangeManager>{new ToolChangeManager{node, executor}};
 }
 
-ToolChangeManager::ToolChangeManager(const rclcpp::Node::SharedPtr& node)
+ToolChangeManager::ToolChangeManager(const rclcpp::Node::SharedPtr& node,
+                                     rclcpp::Executor& executor)
   : m_node{node}
   , m_log{m_node->get_logger()}
   , m_param_interface{node, node->get_logger().get_child("param_interface")}
 {
   // Get initial robot description from parameters
   const auto robot_description_future = m_param_interface.loadRobotDescription();
-  if (rclcpp::spin_until_future_complete(m_node, robot_description_future) !=
+  if (executor.spin_until_future_complete(robot_description_future) !=
       rclcpp::FutureReturnCode::SUCCESS)
   {
     throw std::runtime_error{"Could not read robot description in time"};
@@ -72,7 +74,7 @@ ToolChangeManager::ToolChangeManager(const rclcpp::Node::SharedPtr& node)
   // Set description based on robot model
   const auto set_base_description_future =
     m_param_interface.setRobotDescription(m_robot_model->createDescription());
-  if (rclcpp::spin_until_future_complete(m_node, set_base_description_future) !=
+  if (executor.spin_until_future_complete(set_base_description_future) !=
       rclcpp::FutureReturnCode::SUCCESS)
   {
     throw std::runtime_error{"Could not set initial description"};
@@ -336,7 +338,7 @@ int main(int argc, char* argv[])
   rclcpp::executors::SingleThreadedExecutor executor;
   executor.add_node(node);
 
-  const auto tool_change_manager = tool_change_manager::ToolChangeManager::create(node);
+  const auto tool_change_manager = tool_change_manager::ToolChangeManager::create(node, executor);
 
   executor.spin();
 
