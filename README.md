@@ -19,9 +19,6 @@ This package is still work in progress and neither feature complete nor tested i
         <th>
             <a href="https://docs.ros.org/en/kilted">Kilted</a>
         </th>
-        <th>
-            <a href="https://docs.ros.org/en/rolling">Rolling</a>
-        </th>
     </tr>
     <tr>
         <td>
@@ -38,14 +35,6 @@ This package is still work in progress and neither feature complete nor tested i
             </a> <br />
             <a href="https://github.com/fzi-forschungszentrum-informatik/tool_changer/actions/workflows/kilted_testing.yml">
               <img src="https://github.com/fzi-forschungszentrum-informatik/tool_changer/actions/workflows/kilted_testing.yml/badge.svg?branch=main"alt="kilted Testing"/>
-            </a>
-        </td>
-        <td>
-            <a href="https://github.com/fzi-forschungszentrum-informatik/tool_changer/actions/workflows/rolling_main.yml">
-              <img src="https://github.com/fzi-forschungszentrum-informatik/tool_changer/actions/workflows/rolling_main.yml/badge.svg?branch=main"alt="Rolling Main"/>
-            </a> <br />
-            <a href="https://github.com/fzi-forschungszentrum-informatik/tool_changer/actions/workflows/rolling_testing.yml">
-              <img src="https://github.com/fzi-forschungszentrum-informatik/tool_changer/actions/workflows/rolling_testing.yml/badge.svg?branch=main"alt="Rolling Testing"/>
             </a>
         </td>
     </tr>
