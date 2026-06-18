@@ -52,8 +52,10 @@ DescriptionBuilder::DescriptionBuilder(rclcpp::Logger log)
 {
 }
 
-RobotDescription DescriptionBuilder::buildDescription(const Component& base,
-                                                      const std::vector<Tool>& tools) const
+RobotDescription DescriptionBuilder::buildDescription(
+  const Component& base,
+  const std::vector<Tool>& tools,
+  const std::vector<srdf::Model::Group>& partial_tool_groups) const
 {
   const auto urdf = buildRobotDescription(base, tools);
 
@@ -64,7 +66,7 @@ RobotDescription DescriptionBuilder::buildDescription(const Component& base,
 
   return RobotDescription{
     std::string{printer.CStr(), static_cast<std::size_t>(printer.CStrSize() - 1)},
-    buildRobotDescriptionSemantic(base, tools, *urdf)};
+    buildRobotDescriptionSemantic(base, tools, partial_tool_groups, *urdf)};
 }
 
 std::shared_ptr<urdf::ModelInterface>
@@ -106,7 +108,10 @@ DescriptionBuilder::buildRobotDescription(const Component& base,
 }
 
 std::string DescriptionBuilder::buildRobotDescriptionSemantic(
-  const Component& base, const std::vector<Tool>& tools, const urdf::ModelInterface& urdf) const
+  const Component& base,
+  const std::vector<Tool>& tools,
+  const std::vector<srdf::Model::Group>& partial_tool_groups,
+  const urdf::ModelInterface& urdf) const
 {
   rclcpp::Logger log = m_log;
   SrdfBuilder builder{base.urdf_model, base.srdf_model, log.get_child("srdf_builder")};
@@ -165,6 +170,12 @@ std::string DescriptionBuilder::buildRobotDescriptionSemantic(
           tool_group.name_, tool_group.name_, parent_link->name, tool.active_parent->name_);
       }
     }
+  }
+
+  // Add partial tool groups (subgroups span base + tool boundaries) when all parts are present
+  for (const auto& group : partial_tool_groups)
+  {
+    builder.addGroupIfComplete(group);
   }
 
   // Print SRDF

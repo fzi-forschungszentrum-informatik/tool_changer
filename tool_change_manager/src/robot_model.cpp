@@ -101,7 +101,7 @@ void RobotModel::attach(const std::string& tool_name, const std::string& link)
 
 RobotDescription RobotModel::createDescription() const
 {
-  return m_description_builder.buildDescription(m_base_model, m_tools);
+  return m_description_builder.buildDescription(m_base_model, m_tools, m_partial_tool_groups);
 }
 
 void RobotModel::updateActive(Tool& tool) const
@@ -182,6 +182,34 @@ void RobotModel::parseInitialModel(const RobotDescription& robot_description,
 
   srdf_builder.setFilter(m_base_model.urdf_model);
   m_base_model.srdf_model = srdf_builder.build(*m_base_model.urdf_model);
+
+  // Identify partial tool groups: groups from the original SRDF that were filtered out of the base
+  // model AND are not fully covered by any single tool's SRDF (those are added via addModel).
+  const auto& base_groups = m_base_model.srdf_model->getGroups();
+  for (const auto& group : base_model.srdf_model->getGroups())
+  {
+    const bool in_base = std::any_of(base_groups.begin(), base_groups.end(), [&](const auto& g) {
+      return g.name_ == group.name_;
+    });
+    if (in_base)
+    {
+      continue;
+    }
+
+    const bool in_tool = std::any_of(m_tools.begin(), m_tools.end(), [&](const auto& tool) {
+      const auto& tool_groups = tool.component.srdf_model->getGroups();
+      return std::any_of(tool_groups.begin(), tool_groups.end(), [&](const auto& g) {
+        return g.name_ == group.name_;
+      });
+    });
+    if (in_tool)
+    {
+      continue;
+    }
+
+    RCLCPP_DEBUG(m_log, "Identified partial tool group '%s'", group.name_.c_str());
+    m_partial_tool_groups.push_back(group);
+  }
 
   // Update active state for all tools
   for (auto& tool : m_tools)
