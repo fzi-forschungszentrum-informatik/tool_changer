@@ -72,6 +72,11 @@ void SrdfBuilder::addChain(const std::string& name,
   m_add_groups.push_back(group);
 }
 
+void SrdfBuilder::addGroupIfComplete(const srdf::Model::Group& group)
+{
+  m_conditional_groups.push_back(group);
+}
+
 void SrdfBuilder::addEndEffector(const std::string& name,
                                  const std::string& group,
                                  const std::string& parent_link,
@@ -144,6 +149,29 @@ std::shared_ptr<srdf::Model> SrdfBuilder::build(const urdf::ModelInterface& base
     filterEndEffectors(writer.end_effectors_, writer.groups_, *m_filter);
 
     writer.robot_name_ = m_filter->getName();
+  }
+
+  // Add conditional groups only if all their parts exist (links/joints/chains in the URDF,
+  // subgroups in the current group list)
+  for (const auto& group : m_conditional_groups)
+  {
+    const bool complete =
+      groupInUrdf(group, base_urdf) &&
+      std::all_of(
+        group.subgroups_.begin(), group.subgroups_.end(), [&](const std::string& subgroup_name) {
+          return std::any_of(writer.groups_.begin(),
+                             writer.groups_.end(),
+                             [&](const srdf::Model::Group& g) { return g.name_ == subgroup_name; });
+        });
+    if (complete)
+    {
+      RCLCPP_DEBUG(m_log, "Adding complete partial tool group '%s'", group.name_.c_str());
+      writer.groups_.push_back(group);
+    }
+    else
+    {
+      RCLCPP_DEBUG(m_log, "Skipping incomplete partial tool group '%s'", group.name_.c_str());
+    }
   }
 
   // Create new srdf model from result

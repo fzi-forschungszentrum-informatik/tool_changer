@@ -44,6 +44,7 @@
 #include <functional>
 #include <memory>
 #include <rclcpp/logger.hpp>
+#include <srdfdom/model.h>
 #include <string>
 #include <urdf_model/pose.h>
 #include <vector>
@@ -53,9 +54,6 @@ class ModelInterface;
 class Joint;
 class Link;
 } // namespace urdf
-namespace srdf {
-class Model;
-}
 
 namespace tool_change_manager {
 
@@ -97,6 +95,7 @@ private:
 
   Component m_base_model;
   std::vector<Tool> m_tools;
+  std::vector<srdf::Model::Group> m_partial_tool_groups;
 
   ChangeCb m_change_cb;
 

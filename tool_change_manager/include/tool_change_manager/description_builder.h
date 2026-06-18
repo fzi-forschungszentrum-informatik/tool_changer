@@ -56,15 +56,19 @@ class DescriptionBuilder
 public:
   explicit DescriptionBuilder(rclcpp::Logger log);
 
-  [[nodiscard]] RobotDescription buildDescription(const Component& base,
-                                                  const std::vector<Tool>& tools) const;
+  [[nodiscard]] RobotDescription
+  buildDescription(const Component& base,
+                   const std::vector<Tool>& tools,
+                   const std::vector<srdf::Model::Group>& partial_tool_groups) const;
 
 private:
   std::shared_ptr<urdf::ModelInterface> buildRobotDescription(const Component& base,
                                                               const std::vector<Tool>& tools) const;
-  std::string buildRobotDescriptionSemantic(const Component& base,
-                                            const std::vector<Tool>& tools,
-                                            const urdf::ModelInterface& urdf) const;
+  std::string
+  buildRobotDescriptionSemantic(const Component& base,
+                                const std::vector<Tool>& tools,
+                                const std::vector<srdf::Model::Group>& partial_tool_groups,
+                                const urdf::ModelInterface& urdf) const;
 
   // Collision pair creation
   std::vector<srdf::Model::CollisionPair>

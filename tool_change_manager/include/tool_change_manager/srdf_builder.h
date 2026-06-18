@@ -59,6 +59,7 @@ public:
                             const std::string& link2,
                             const std::string& reason = "");
   void addChain(const std::string& name, const std::string& base_link, const std::string& tip_link);
+  void addGroupIfComplete(const srdf::Model::Group& group);
   void addEndEffector(const std::string& name,
                       const std::string& group,
                       const std::string& parent_link,
@@ -92,6 +93,7 @@ private:
   std::vector<std::shared_ptr<srdf::Model>> m_add_models;
   std::vector<srdf::Model::CollisionPair> m_add_collision_pairs;
   std::vector<srdf::Model::Group> m_add_groups;
+  std::vector<srdf::Model::Group> m_conditional_groups;
   std::vector<srdf::Model::EndEffector> m_add_end_effectors;
 
   std::shared_ptr<urdf::ModelInterface> m_filter;
