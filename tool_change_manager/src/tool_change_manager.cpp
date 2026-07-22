@@ -122,8 +122,9 @@ std::vector<ToolDefinition> ToolChangeManager::readToolParams(rclcpp::Node& node
 
     // tip links
     const auto tip_links_param_str = fmt::format("{}.tip_links", name);
-    node.declare_parameter<std::vector<std::string>>(tip_links_param_str);
-    const auto tip_links = node.get_parameter_or<std::vector<std::string>>(tip_links_param_str, {});
+    node.declare_parameter<std::vector<std::string>>(tip_links_param_str,
+                                                     std::vector<std::string>{});
+    const auto tip_links = node.get_parameter(tip_links_param_str).as_string_array();
 
     tools.emplace_back(name, root_link, tip_links);
   }
@@ -146,8 +147,8 @@ ToolChangeManager::ToolPathMsg ToolChangeManager::readToolPath(const std::string
   node.declare_parameter<std::string>(path_frame_param, default_frame);
 
   ToolPathMsg msg;
-  msg.tip        = node.get_parameter_or(tip_link_param, default_tip);
-  msg.path_frame = node.get_parameter_or(path_frame_param, default_frame);
+  msg.tip        = node.get_parameter(tip_link_param).as_string();
+  msg.path_frame = node.get_parameter(path_frame_param).as_string();
   msg.motion_limits.max_trans_vel =
     node.declare_parameter<double>(fmt::format("{}.motion_limits.max_trans_vel", prefix), 0.0);
   msg.motion_limits.max_trans_acc =
