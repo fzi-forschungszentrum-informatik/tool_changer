@@ -11,6 +11,10 @@ string[] after_unlock_collision_links
 
 # Pairs of links that are allowed to collide during the approach and retract trajectories
 manipulation_pipeline_interfaces/CollisionPair[] allowed_collisions
+
+# Controller to use for trajectory execution
+# If left empty, a default controller is used
+string controller
 ---
 bool success
 string message
