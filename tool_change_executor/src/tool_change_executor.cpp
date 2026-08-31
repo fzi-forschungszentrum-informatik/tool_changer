@@ -440,7 +440,7 @@ void ToolChangeExecutor::coupleAcceptCb(std::shared_ptr<CoupleGoalHandle> goal_h
   if (!m_couple_thread.work(goal_handle))
   {
     const auto result = std::make_shared<CoupleAction::Result>();
-    result->success   = true;
+    result->success   = false;
     result->message   = "Couple action already in progress";
     goal_handle->abort(result);
   }
@@ -464,7 +464,7 @@ void ToolChangeExecutor::decoupleAcceptCb(std::shared_ptr<DecoupleGoalHandle> go
   if (!m_decouple_thread.work(goal_handle))
   {
     const auto result = std::make_shared<DecoupleAction::Result>();
-    result->success   = true;
+    result->success   = false;
     result->message   = "Decouple action already in progress";
     goal_handle->abort(result);
   }
